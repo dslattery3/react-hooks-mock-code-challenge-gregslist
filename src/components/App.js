@@ -4,24 +4,16 @@ import ListingsContainer from "./ListingsContainer";
 
 function App() {
   const [postings, setPostings] = useState([])
-  const [searchVal, setSearchVal] = useState('')
+  const [search, setSearch] = useState('')
 
-  function handleSearch(e){
-    console.log(e.target.value)
+  const justClickedSubmit = (searchTerm) => {
+    setSearch(searchTerm)
   }
-  function searchBar(){
-    const searchTerm = searchVal
-    const newList = [...postings]
-    const finalList = []
 
-    const filteredList = newList.map((post) => post.description.toLowerCase().includes(searchTerm.toLowerCase()) && finalList.push(post))
-    
-    console.log(filteredList)
-    console.log(finalList)
+  const searchedListings = postings.filter(post => {
+    return post.description.toLowerCase().includes(search.toLowerCase())
+  })
 
-    setPostings(finalList)
-
-  }
   useEffect (() => {
     fetch('http://localhost:6001/listings').then(r=>r.json()).then(setPostings)
   }, [])
@@ -31,21 +23,16 @@ function App() {
     const index = newPostList.findIndex((posting) => posting.id === postId)
     newPostList.splice(index, 1)
     fetch('http://localhost:6001/listings/' + postId,{
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify()
-      }
-    ).then(r=>r.json()).then(console.log)
-
+      method: 'DELETE'
+    }
+    )
     setPostings(newPostList)    
   }
 
   return (
     <div className="app">
-      <Header setSearchVal={setSearchVal} handleSearch={handleSearch} searchVal={searchVal} searchBar={searchBar} />
-      <ListingsContainer postings={postings} deletePost={deletePost}/>
+      <Header justClickedSubmit={justClickedSubmit}/>
+      <ListingsContainer postings={searchedListings} deletePost={deletePost}/>
     </div>
   );
 }
