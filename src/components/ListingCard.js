@@ -1,10 +1,14 @@
 import React, {useState} from "react";
 
-function ListingCard({posting}) {
+function ListingCard({posting, deletePost}) {
   const [isLiked, setIsLiked] = useState(false)
   function handleLike(){
     setIsLiked(!isLiked)
   }
+  function handleDelete(){
+    deletePost(posting.id)
+  }
+
   return (
     <li className="card">
       <div className="image">
@@ -19,7 +23,7 @@ function ListingCard({posting}) {
         )}
         <strong>{posting.description}</strong>
         <span> · {posting.location}</span>
-        <button className="emoji-button delete">🗑</button>
+        <button onClick={handleDelete}className="emoji-button delete">🗑</button>
       </div>
     </li>
   );
